@@ -22,6 +22,11 @@ function Home() {
   )
 }
 
+function HomeEntry() {
+  const role = localStorage.getItem("role")
+  return role ? <Home /> : <Navigate to="/login" replace />
+}
+
 function RequireAccess({ allowMentee, allowAdmin, children }) {
   const role = localStorage.getItem("role")
 
@@ -46,7 +51,7 @@ function App() {
       <Navbar />
       <main className="container">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<HomeEntry />} />
           <Route path="/login" element={<Login />} />
           <Route
             path="/mentee/dashboard"
@@ -96,6 +101,7 @@ function App() {
               </RequireAccess>
             }
           />
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </main>
       <Footer />

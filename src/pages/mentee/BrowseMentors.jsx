@@ -6,6 +6,8 @@ const mentors = [
   { id: 2, name: "Anita Verma", expertise: "Data Science", experience: 7 },
   { id: 3, name: "Kiran Patel", expertise: "UI/UX Design", experience: 4 },
   { id: 4, name: "Meera Nair", expertise: "Aptitude & Interview Prep", experience: 6 },
+  { id: 5, name: "Arjun Rao", expertise: "Java & DSA", experience: 8 },
+  { id: 6, name: "Sneha Kulkarni", expertise: "Cloud & DevOps", experience: 5 },
 ]
 
 function BrowseMentors() {

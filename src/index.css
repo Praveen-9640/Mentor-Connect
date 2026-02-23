@@ -247,8 +247,14 @@ select {
 
 .booking-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 10px;
+}
+
+.prototype-table th:first-child,
+.prototype-table td:first-child {
+  font-weight: 700;
+  color: #e26400;
 }
 
 .logout-btn {
