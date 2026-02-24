@@ -2,7 +2,7 @@ import { useState } from "react"
 import Sidebar from "../../components/Sidebar"
 
 const mentorNames = [
-  "Rahul Sharma",
+  "Nithya prasuna",
   "Anita Verma",
   "Kiran Patel",
   "Meera Nair",
@@ -11,7 +11,7 @@ const mentorNames = [
 ]
 
 const initialSessions = [
-  { id: 1, mentor: "Rahul Sharma", date: "2026-02-24", time: "08:00-10:00", status: "Scheduled" },
+  { id: 1, mentor: "Nithya prasuna", date: "2026-02-24", time: "08:00-10:00", status: "Scheduled" },
   { id: 2, mentor: "Anita Verma", date: "2026-02-26", time: "12:00-15:00", status: "Scheduled" },
 ]
 

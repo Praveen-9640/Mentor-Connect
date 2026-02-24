@@ -45,6 +45,12 @@ function Login() {
       return
     }
 
+    if (selectedRole === "mentor" && username === "mentor" && password === "mentor123") {
+      localStorage.setItem("role", "mentor")
+      navigate("/mentor/sessions")
+      return
+    }
+
     setError(`Invalid ${selectedRole} credentials.`)
     refreshCaptcha()
   }
@@ -52,12 +58,13 @@ function Login() {
   return (
     <section className="card login-card">
       <h2>Login</h2>
-      <p className="hint">Demo credentials: admin/admin123 or mentee/mentee123</p>
+      <p className="hint">Demo credentials: admin/admin123, mentee/mentee123, mentor/mentor123</p>
 
       <label>
         Login as
         <select value={selectedRole} onChange={(e) => setSelectedRole(e.target.value)}>
           <option value="mentee">Mentee</option>
+          <option value="mentor">Mentor</option>
           <option value="admin">Admin</option>
         </select>
       </label>
@@ -67,7 +74,7 @@ function Login() {
         <input
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="admin or mentee"
+          placeholder="admin or mentee or mentor"
         />
       </label>
 

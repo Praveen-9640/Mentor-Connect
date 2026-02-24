@@ -12,6 +12,7 @@ function Navbar() {
       <div className="nav-links">
         <Link to="/">Home</Link>
         <Link to="/mentee/dashboard">Mentee</Link>
+        <Link to="/mentor/sessions">Mentor</Link>
         <Link to="/admin/dashboard">Admin</Link>
         {!role ? (
           <Link to="/login">Login</Link>

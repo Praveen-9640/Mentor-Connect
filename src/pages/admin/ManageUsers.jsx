@@ -2,7 +2,7 @@ import { useState } from "react"
 import AdminSidebar from "../../components/AdminSidebar"
 
 const initialUsers = [
-  { id: 1, name: "Rahul Sharma", role: "Mentor", status: "Approved" },
+  { id: 1, name: "Nithya prasuna", role: "Mentor", status: "Approved" },
   { id: 2, name: "Anita Verma", role: "Mentor", status: "Pending" },
   { id: 3, name: "Karthik Reddy", role: "Mentee", status: "Active" },
 ]

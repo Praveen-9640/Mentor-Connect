@@ -1,4 +1,4 @@
-import { Navigate, Routes, Route } from "react-router-dom"
+import { Navigate, Routes, Route, useLocation, useNavigate } from "react-router-dom"
 import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 import Login from "./pages/Login"
@@ -8,15 +8,67 @@ import ManageSessions from "./pages/admin/ManageSessions"
 import MenteeDashboard from "./pages/mentee/MenteeDashboard"
 import BrowseMentors from "./pages/mentee/BrowseMentors"
 import MySessions from "./pages/mentee/MySessions"
+import MentorSessions from "./pages/mentor/MentorSessions"
 
 function Home() {
+  const navigate = useNavigate()
+
   return (
-    <section className="card home-card">
-      <h1>MentorConnect Study Hub</h1>
-      <p>Learn with mentors, book focused sessions, and track your study journey.</p>
-      <div className="home-points">
-        <span>Admin: manage users and sessions</span>
-        <span>Mentee: browse mentors and book sessions</span>
+    <section className="card hero-card">
+      <div className="hero-grid">
+        <div className="hero-copy">
+          <p className="hero-tag">MentorConnect Platform</p>
+          <h1>Online Mentoring & Training Platform</h1>
+          <p>
+            Learn with mentors, schedule focused sessions, and track study progress
+            with role-based dashboards for Admin, Mentor, and Mentee.
+          </p>
+          <div className="actions">
+            <button className="btn" onClick={() => navigate("/get-started")}>
+              Get Started
+            </button>
+          </div>
+        </div>
+
+        <div className="hero-visual" aria-hidden="true">
+          <div className="hero-screen">
+            <span>Mentoring</span>
+          </div>
+          <div className="hero-block hero-block-a" />
+          <div className="hero-block hero-block-b" />
+          <div className="hero-block hero-block-c" />
+          <div className="hero-ring" />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function GetStarted() {
+  const navigate = useNavigate()
+
+  return (
+    <section className="card getstart-hero-card getstart-simple getstart-page-center">
+      <div className="hero-visual" aria-hidden="true">
+        <div className="hero-screen">
+          <span className="hero-screen-title">Find Your Mentor Today</span>
+        </div>
+        <div className="hero-block hero-block-a" />
+        <div className="hero-block hero-block-b" />
+        <div className="hero-block hero-block-c" />
+        <div className="hero-ring" />
+
+        <div className="getstart-text getstart-center">
+          <h2 className="text-5xl font-normal text-[#322452] mb-6">
+  MentorConnect
+</h2>
+          <p className="getstart-subtitle">Online Mentoring & Training Platform</p>
+          <p className="getstart-value">Connect with expert mentors. Book sessions. <br />
+          Grow faster.</p>
+          <button className="btn" onClick={() => navigate("/login")}>
+            Find a Mentor
+          </button>
+        </div>
       </div>
     </section>
   )
@@ -24,10 +76,10 @@ function Home() {
 
 function HomeEntry() {
   const role = localStorage.getItem("role")
-  return role ? <Home /> : <Navigate to="/login" replace />
+  return role ? <Home /> : <Navigate to="/get-started" replace />
 }
 
-function RequireAccess({ allowMentee, allowAdmin, children }) {
+function RequireAccess({ allowMentee, allowAdmin, allowMentor, children }) {
   const role = localStorage.getItem("role")
 
   if (!role) {
@@ -42,16 +94,32 @@ function RequireAccess({ allowMentee, allowAdmin, children }) {
     return children
   }
 
-  return <Navigate to={role === "admin" ? "/admin/dashboard" : "/mentee/dashboard"} replace />
+  if (role === "mentor" && allowMentor) {
+    return children
+  }
+
+  if (role === "admin") {
+    return <Navigate to="/admin/dashboard" replace />
+  }
+
+  if (role === "mentor") {
+    return <Navigate to="/mentor/sessions" replace />
+  }
+
+  return <Navigate to="/mentee/dashboard" replace />
 }
 
 function App() {
+  const location = useLocation()
+  const hideNavbar = location.pathname === "/get-started"
+
   return (
     <div className="app">
-      <Navbar />
+      {!hideNavbar ? <Navbar /> : null}
       <main className="container">
         <Routes>
           <Route path="/" element={<HomeEntry />} />
+          <Route path="/get-started" element={<GetStarted />} />
           <Route path="/login" element={<Login />} />
           <Route
             path="/mentee/dashboard"
@@ -74,6 +142,14 @@ function App() {
             element={
               <RequireAccess allowMentee allowAdmin>
                 <MySessions />
+              </RequireAccess>
+            }
+          />
+          <Route
+            path="/mentor/sessions"
+            element={
+              <RequireAccess allowMentor allowAdmin>
+                <MentorSessions />
               </RequireAccess>
             }
           />

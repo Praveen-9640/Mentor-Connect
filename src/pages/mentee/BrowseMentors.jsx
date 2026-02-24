@@ -2,7 +2,7 @@ import Sidebar from "../../components/Sidebar"
 import MentorCard from "../../components/MentorCard"
 
 const mentors = [
-  { id: 1, name: "Rahul Sharma", expertise: "Web Development", experience: 5 },
+  { id: 1, name: "Nithya prasuna", expertise: "Web Development", experience: 5 },
   { id: 2, name: "Anita Verma", expertise: "Data Science", experience: 7 },
   { id: 3, name: "Kiran Patel", expertise: "UI/UX Design", experience: 4 },
   { id: 4, name: "Meera Nair", expertise: "Aptitude & Interview Prep", experience: 6 },

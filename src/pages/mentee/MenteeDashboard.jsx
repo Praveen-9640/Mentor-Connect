@@ -17,7 +17,7 @@ function MenteeDashboard() {
         <div className="stat-grid">
           <article className="stat-card">
             <p>Assigned Mentor</p>
-            <h3>Rahul Sharma</h3>
+            <h3>Nithya prasuna</h3>
           </article>
           <article className="stat-card">
             <p>Upcoming Sessions</p>
