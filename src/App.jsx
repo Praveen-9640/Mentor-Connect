@@ -59,12 +59,11 @@ function GetStarted() {
         <div className="hero-ring" />
 
         <div className="getstart-text getstart-center">
-          <h2 className="text-5xl font-normal text-[#322452] mb-6">
-  MentorConnect
-</h2>
+          <h1 className="getstart-title">MentorConnect</h1>
           <p className="getstart-subtitle">Online Mentoring & Training Platform</p>
-          <p className="getstart-value">Connect with expert mentors. Book sessions. <br />
-          Grow faster.</p>
+          <p className="text-base text-gray-700 leading-relaxed max-w-md mx-auto">
+            Connect with expert mentors. Book sessions. Grow faster.
+          </p>
           <button className="btn" onClick={() => navigate("/login")}>
             Find a Mentor
           </button>
@@ -111,11 +110,11 @@ function RequireAccess({ allowMentee, allowAdmin, allowMentor, children }) {
 
 function App() {
   const location = useLocation()
-  const hideNavbar = location.pathname === "/get-started"
+  const isGetStarted = location.pathname === "/get-started"
 
   return (
     <div className="app">
-      {!hideNavbar ? <Navbar /> : null}
+      {!isGetStarted ? <Navbar /> : null}
       <main className="container">
         <Routes>
           <Route path="/" element={<HomeEntry />} />
@@ -180,7 +179,7 @@ function App() {
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </main>
-      <Footer />
+      {!isGetStarted ? <Footer /> : null}
     </div>
   )
 }

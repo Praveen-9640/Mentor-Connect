@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -16,7 +17,7 @@
 
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: "Inter", sans-serif;
   background:
     radial-gradient(circle at 0% 25%, rgba(235, 111, 89, 0.22) 0, rgba(235, 111, 89, 0.22) 16%, transparent 17%),
     radial-gradient(circle at 100% 28%, rgba(83, 161, 140, 0.24) 0, rgba(83, 161, 140, 0.24) 16%, transparent 17%),
@@ -170,8 +171,8 @@ body {
 }
 
 .getstart-hero-card {
-  padding: 22px;
-  background: linear-gradient(160deg, #def9ff, #d8f4ef 42%, #ffe5d8 100%);
+  padding: 26px;
+  background: linear-gradient(155deg, #e3f8ff, #dbf5ef 45%, #ffe8dc 100%);
 }
 
 .getstart-simple {
@@ -180,52 +181,95 @@ body {
 }
 
 .getstart-page-center {
-  width: min(860px, 92vw);
-  margin: 46px auto;
-  border-radius: 20px;
-  box-shadow: 0 16px 30px rgba(120, 96, 81, 0.16);
+  width: min(900px, 92vw);
+  margin: 52px auto 40px;
+  border-radius: 22px;
+  box-shadow: 0 20px 34px rgba(120, 96, 81, 0.18);
 }
 
 .getstart-simple .hero-visual {
-  min-height: 390px;
-  border-radius: 22px;
+  min-height: 450px;
+  border-radius: 24px;
+  border-color: #d1e8e9;
+  background:
+    radial-gradient(circle at 18% 15%, rgba(255, 255, 255, 0.72) 0, rgba(255, 255, 255, 0) 44%),
+    radial-gradient(circle at 82% 10%, rgba(84, 169, 220, 0.24) 0, rgba(84, 169, 220, 0) 36%),
+    linear-gradient(160deg, #d8f6ff, #d5f2ef 45%, #ffe2d7 100%);
 }
 
-.getstart-text h1 {
+.getstart-title {
   margin: 0;
-  font-size: clamp(3rem, 5vw, 3.5rem);
-  font-family: Arial, sans-serif;
-  color: #322452;
-  line-height: 2;
+  font-size: clamp(2rem, 5.4vw, 3rem);
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  color: #24173d;
+  line-height: 1.15;
 }
 
 .getstart-text p {
-  font-weight: 600;
+  font-weight: 500;
   margin: 0;
 }
 
 .getstart-subtitle {
-  margin-top: 0.6rem;
-  color: #776d8f;
-  font-size: 1rem;
-  letter-spacing: 0.02em;
+  margin-top: 0.8rem;
+  color: #685f80;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  opacity: 0.7;
+  text-transform: uppercase;
 }
 
 .getstart-value {
-  margin: 0.75rem 0 1rem;
-  color: #51466e;
-  font-size: 1.02rem;
-  font-weight: 600;
+  margin: 0.95rem 0 0;
+  color: #43385d;
+  font-size: clamp(1rem, 2.3vw, 1.2rem);
+  line-height: 1.55;
+  max-width: 28ch;
+  margin-inline: auto;
 }
 
 .getstart-center {
   position: absolute;
   left: 50%;
-  top: 56%;
+  top: 58%;
   transform: translate(-50%, -50%);
-  width: min(430px, 62%);
-  padding: 0;
+  width: min(460px, 64%);
+  padding: 24px 32px 22px;
   text-align: center;
+    background: rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.74);
+  border-radius: 22px;
+  box-shadow: 0 8px 20px rgba(54, 70, 95, 0.1);
+  backdrop-filter: blur(1px);
+}
+
+.getstart-simple .hero-screen {
+  right: 30px;
+  top: 30px;
+  width: 206px;
+  height: 136px;
+}
+
+.getstart-simple .hero-screen-title {
+  font-size: 1.18rem;
+}
+
+.getstart-simple .hero-block-a {
+  animation: none;
+}
+
+.getstart-simple .hero-block-b {
+  animation: none;
+}
+
+.getstart-simple .hero-block-c {
+  animation: none;
+}
+
+.getstart-simple .hero-ring {
+  animation: glowPulse 3.6s ease-in-out infinite;
 }
 
 .hero-card {
@@ -350,6 +394,12 @@ body {
   0% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
   100% { transform: translateY(0); }
+}
+
+@keyframes glowPulse {
+  0% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.07); }
+  100% { opacity: 0.7; transform: scale(1); }
 }
 
 .stat-grid {
@@ -510,12 +560,55 @@ select {
     min-height: 230px;
   }
 
+  .getstart-page-center {
+    margin: 26px auto;
+    border-radius: 18px;
+  }
+
+  .getstart-simple .hero-visual {
+    min-height: 500px;
+    border-radius: 18px;
+  }
+
+  .getstart-simple .hero-screen {
+    right: 14px;
+    top: 16px;
+    width: 156px;
+    height: 104px;
+    border-radius: 12px;
+  }
+
+  .getstart-simple .hero-screen-title {
+    font-size: 0.98rem;
+  }
+
   .getstart-center {
-    top: 52%;
-    width: 88%;
+    top: auto;
+    bottom: 16px;
+    transform: translateX(-50%);
+    width: calc(100% - 30px);
+    padding: 20px 16px;
+  }
+
+  .getstart-title {
+    font-size: clamp(1.75rem, 8.6vw, 2.2rem);
+  }
+
+  .getstart-subtitle {
+    letter-spacing: 0.08em;
+  }
+
+  .getstart-value {
+    font-size: 1rem;
+    line-height: 1.5;
   }
 }
 
 .getstart-text .btn {
-  margin-top: 18px;
+  margin-top: 22px;
+  padding: 11px 20px;
+  border-radius: 999px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
