@@ -55,55 +55,124 @@ function Login() {
     refreshCaptcha()
   }
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleLogin()
+  }
+
   return (
-    <section className="card login-card">
-      <h2>Login</h2>
-      <p className="hint">Demo credentials: admin/admin123, mentee/mentee123, mentor/mentor123</p>
+    <div className="login-page">
+      {/* Left branding panel */}
+      <div className="login-left">
+        <div className="login-left-inner">
+          <div className="login-logo-badge" aria-hidden="true">
+            <span>MC</span>
+          </div>
+          <h1 className="login-brand-name">MentorConnect</h1>
+          <p className="login-brand-tagline">Knowledge. Guidance. Growth.</p>
 
-      <label>
-        Login as
-        <select value={selectedRole} onChange={(e) => setSelectedRole(e.target.value)}>
-          <option value="mentee">Mentee</option>
-          <option value="mentor">Mentor</option>
-          <option value="admin">Admin</option>
-        </select>
-      </label>
+          <ul className="login-features">
+            <li>
+              <span className="login-feature-dot" />
+              Connect with expert mentors
+            </li>
+            <li>
+              <span className="login-feature-dot" />
+              Book 1-on-1 sessions easily
+            </li>
+            <li>
+              <span className="login-feature-dot" />
+              Track your learning progress
+            </li>
+          </ul>
+        </div>
 
-      <label>
-        Username
-        <input
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="admin or mentee or mentor"
-        />
-      </label>
-
-      <label>
-        Password
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Enter password"
-        />
-      </label>
-
-      <label>
-        Captcha: {captcha.a} + {captcha.b} = ?
-        <input
-          value={captchaInput}
-          onChange={(e) => setCaptchaInput(e.target.value)}
-          placeholder="Enter answer"
-        />
-      </label>
-
-      <div className="actions">
-        <button className="btn" onClick={handleLogin}>Login</button>
-        <button className="btn btn-light" onClick={refreshCaptcha}>Refresh Captcha</button>
+        {/* Decorative blobs */}
+        <div className="login-blob login-blob-a" aria-hidden="true" />
+        <div className="login-blob login-blob-b" aria-hidden="true" />
       </div>
 
-      {error ? <p className="error-text">{error}</p> : null}
-    </section>
+      {/* Right form panel */}
+      <div className="login-right">
+        <div className="login-form-wrap">
+          <h2 className="login-form-title">Welcome back</h2>
+          <p className="login-form-sub">Sign in to your account to continue</p>
+
+          <p className="login-demo-hint">
+            Demo — admin/admin123 · mentee/mentee123 · mentor/mentor123
+          </p>
+
+          <div className="login-field">
+            <label className="login-label" htmlFor="login-role">Login as</label>
+            <select
+              id="login-role"
+              className="login-input"
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value)}
+            >
+              <option value="mentee">Mentee</option>
+              <option value="mentor">Mentor</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+
+          <div className="login-field">
+            <label className="login-label" htmlFor="login-username">Username</label>
+            <input
+              id="login-username"
+              className="login-input"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Enter username"
+              autoComplete="username"
+            />
+          </div>
+
+          <div className="login-field">
+            <label className="login-label" htmlFor="login-password">Password</label>
+            <input
+              id="login-password"
+              className="login-input"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Enter password"
+              autoComplete="current-password"
+            />
+          </div>
+
+          <div className="login-field">
+            <label className="login-label" htmlFor="login-captcha">
+              Captcha: {captcha.a} + {captcha.b} = ?
+            </label>
+            <input
+              id="login-captcha"
+              className="login-input"
+              value={captchaInput}
+              onChange={(e) => setCaptchaInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Enter answer"
+            />
+          </div>
+
+          {error && <p className="login-error">{error}</p>}
+
+          <div className="login-actions">
+            <button className="btn login-btn" onClick={handleLogin}>
+              Sign In
+            </button>
+            <button className="btn btn-light login-refresh-btn" onClick={refreshCaptcha}>
+              Refresh Captcha
+            </button>
+          </div>
+
+          <p className="login-back-link">
+            <a href="/get-started">← Back</a>
+          </p>
+        </div>
+      </div>
+    </div>
   )
 }
 

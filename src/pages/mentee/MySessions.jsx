@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Sidebar from "../../components/Sidebar"
 
 const mentorNames = [
@@ -25,19 +25,16 @@ const weekRows = [
   { label: "Sat", day: 6 },
 ]
 
-function getCurrentWeekRange() {
+function getBookingRange() {
   const today = new Date()
-  const day = today.getDay()
-  const diffToMonday = day === 0 ? -6 : 1 - day
-  const weekStart = new Date(today)
-  weekStart.setDate(today.getDate() + diffToMonday)
-  weekStart.setHours(0, 0, 0, 0)
+  const start = new Date(today)
+  start.setHours(0, 0, 0, 0)
 
-  const weekEnd = new Date(weekStart)
-  weekEnd.setDate(weekStart.getDate() + 6)
-  weekEnd.setHours(23, 59, 59, 999)
+  const end = new Date(start)
+  end.setDate(start.getDate() + 6)
+  end.setHours(23, 59, 59, 999)
 
-  return { weekStart, weekEnd }
+  return { start, end }
 }
 
 function formatDateInput(date) {
@@ -47,47 +44,89 @@ function formatDateInput(date) {
   return `${year}-${month}-${day}`
 }
 
-function getSlotMentor(sessions, weekday, slot, weekStart, weekEnd) {
+function parseDateInput(dateStr) {
+  const [year, month, day] = dateStr.split("-").map(Number)
+  return new Date(year, month - 1, day)
+}
+
+function getSlotStartMinutes(slot) {
+  const [start] = slot.split("-")
+  const [hours, minutes] = start.split(":").map(Number)
+  return hours * 60 + minutes
+}
+
+function isSlotBookable(selectedDate, slot, now = new Date()) {
+  if (!selectedDate) return false
+
+  const bookingDate = parseDateInput(selectedDate)
+  bookingDate.setHours(0, 0, 0, 0)
+
+  const today = new Date(now)
+  today.setHours(0, 0, 0, 0)
+
+  if (bookingDate < today) return false
+  if (bookingDate > today) return true
+
+  const currentMinutes = now.getHours() * 60 + now.getMinutes()
+  return getSlotStartMinutes(slot) > currentMinutes
+}
+
+function getSlotMentor(sessions, weekday, slot, rangeStart, rangeEnd) {
   const booked = sessions.find((session) => {
-    if (session.status !== "Scheduled") {
-      return false
-    }
-    const sessionDate = new Date(session.date)
+    if (session.status !== "Scheduled") return false
+    const sessionDate = parseDateInput(session.date)
     const day = sessionDate.getDay()
-    return day === weekday &&
-      session.time === slot &&
-      sessionDate >= weekStart &&
-      sessionDate <= weekEnd
+    return day === weekday && session.time === slot &&
+      sessionDate >= rangeStart && sessionDate <= rangeEnd
   })
 
   return booked ? booked.mentor : "--"
 }
 
 function MySessions() {
-  const { weekStart, weekEnd } = getCurrentWeekRange()
-  const minDate = formatDateInput(weekStart)
-  const maxDate = formatDateInput(weekEnd)
+  const { start, end } = getBookingRange()
+  const minDate = formatDateInput(start)
+  const maxDate = formatDateInput(end)
+  const initialSlots = timeSlots.filter((slot) => isSlotBookable(minDate, slot))
 
   const [sessions, setSessions] = useState(initialSessions)
   const [message, setMessage] = useState("")
   const [selectedMentor, setSelectedMentor] = useState(mentorNames[0])
-  const [selectedDate, setSelectedDate] = useState("")
-  const [selectedTime, setSelectedTime] = useState("08:00-10:00")
+  const [selectedDate, setSelectedDate] = useState(minDate)
+  const [selectedTime, setSelectedTime] = useState(initialSlots[0] ?? "")
+
+  const availableTimeSlots = timeSlots.filter((slot) => isSlotBookable(selectedDate, slot))
+
+  useEffect(() => {
+    if (!availableTimeSlots.includes(selectedTime)) {
+      setSelectedTime(availableTimeSlots[0] ?? "")
+    }
+  }, [availableTimeSlots, selectedTime])
 
   const cancelSession = (id) => {
     setSessions((prev) => prev.map((s) => (s.id === id ? { ...s, status: "Cancelled" } : s)))
     setMessage("Session cancelled.")
   }
 
+  const approveSession = (id) => {
+    setSessions((prev) => prev.map((s) => (s.id === id ? { ...s, status: "Scheduled" } : s)))
+    setMessage("Session approved.")
+  }
+
   const addSession = () => {
     if (!selectedDate) {
-      setMessage("Please choose a date from calendar.")
+      setMessage("Please choose a date.")
       return
     }
 
-    const bookingDate = new Date(selectedDate)
-    if (bookingDate < weekStart || bookingDate > weekEnd) {
-      setMessage("Please select a date from current week only.")
+    const bookingDate = parseDateInput(selectedDate)
+    if (bookingDate < start || bookingDate > end) {
+      setMessage("You can only book within the next 7 days.")
+      return
+    }
+
+    if (!selectedTime || !isSlotBookable(selectedDate, selectedTime)) {
+      setMessage("Please choose a future time slot.")
       return
     }
 
@@ -99,7 +138,7 @@ function MySessions() {
     )
 
     if (isAlreadyBooked) {
-      setMessage("No mentor available at that time")
+      setMessage("No mentor available at that time.")
       return
     }
 
@@ -113,7 +152,7 @@ function MySessions() {
         status: "Scheduled",
       },
     ])
-    setMessage("New session booked.")
+    setMessage("Session booked!")
   }
 
   return (
@@ -127,7 +166,7 @@ function MySessions() {
         </header>
 
         <article className="card">
-          <h3>Weekly Prototype Schedule</h3>
+          <h3>Weekly Schedule</h3>
           <table className="table prototype-table">
             <thead>
               <tr>
@@ -142,7 +181,7 @@ function MySessions() {
                 <tr key={row.label}>
                   <td>{row.label}</td>
                   {timeSlots.map((slot) => (
-                    <td key={slot}>{getSlotMentor(sessions, row.day, slot, weekStart, weekEnd)}</td>
+                    <td key={slot}>{getSlotMentor(sessions, row.day, slot, start, end)}</td>
                   ))}
                 </tr>
               ))}
@@ -151,14 +190,13 @@ function MySessions() {
         </article>
 
         <article className="card">
+          <h3>Book a Session</h3>
           <div className="booking-row">
             <label>
               Mentor
               <select value={selectedMentor} onChange={(e) => setSelectedMentor(e.target.value)}>
                 {mentorNames.map((mentor) => (
-                  <option key={mentor} value={mentor}>
-                    {mentor}
-                  </option>
+                  <option key={mentor} value={mentor}>{mentor}</option>
                 ))}
               </select>
             </label>
@@ -167,25 +205,38 @@ function MySessions() {
               <input
                 type="date"
                 value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
+                onChange={(e) => {
+                  setSelectedDate(e.target.value)
+                  setMessage("")
+                }}
                 min={minDate}
                 max={maxDate}
               />
             </label>
             <label>
               Time Slot
-              <select value={selectedTime} onChange={(e) => setSelectedTime(e.target.value)}>
-                {timeSlots.map((slot) => (
-                  <option key={slot} value={slot}>
-                    {slot}
-                  </option>
+              <select
+                value={selectedTime}
+                onChange={(e) => setSelectedTime(e.target.value)}
+                disabled={!availableTimeSlots.length}
+              >
+                {availableTimeSlots.map((slot) => (
+                  <option key={slot} value={slot}>{slot}</option>
                 ))}
+                {!availableTimeSlots.length ? <option value="">No slots available</option> : null}
               </select>
             </label>
           </div>
           <div className="actions">
-            <button className="btn" onClick={addSession}>Book Session</button>
+            <button className="btn" onClick={addSession} disabled={!availableTimeSlots.length}>
+              Book Session
+            </button>
           </div>
+          {message ? <p className="hint">{message}</p> : null}
+        </article>
+
+        <article className="card">
+          <h3>My Bookings</h3>
           <table className="table">
             <thead>
               <tr>
@@ -202,8 +253,17 @@ function MySessions() {
                   <td>{session.mentor}</td>
                   <td>{session.date}</td>
                   <td>{session.time}</td>
-                  <td>{session.status}</td>
                   <td>
+                    <span className={`status-badge ${session.status.toLowerCase()}`}>
+                      {session.status}
+                    </span>
+                  </td>
+                  <td style={{ display: "flex", gap: "6px" }}>
+                    {session.status === "Cancelled" ? (
+                      <button className="btn btn-small" onClick={() => approveSession(session.id)}>
+                        Approve
+                      </button>
+                    ) : null}
                     <button className="btn btn-light btn-small" onClick={() => cancelSession(session.id)}>
                       Cancel
                     </button>
@@ -212,7 +272,6 @@ function MySessions() {
               ))}
             </tbody>
           </table>
-          {message ? <p className="hint">{message}</p> : null}
         </article>
       </section>
     </div>

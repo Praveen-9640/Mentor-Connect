@@ -17,7 +17,7 @@ function AdminDashboard() {
       <section className="workspace-main">
         <header className="page-header">
           <h1>Admin Dashboard</h1>
-          <p>Simple overview for users and sessions.</p>
+          <p>Overview of users and sessions on the platform.</p>
         </header>
 
         <div className="stat-grid">
@@ -33,16 +33,16 @@ function AdminDashboard() {
           <h3>Quick Actions</h3>
           <div className="actions">
             <button className="btn" onClick={() => navigate("/admin/users")}>
-              Open Users
+              Manage Users
             </button>
             <button className="btn btn-light" onClick={() => navigate("/admin/sessions")}>
-              Open Sessions
+              Manage Sessions
             </button>
           </div>
-          <p className="hint">These buttons navigate to working pages.</p>
         </article>
+
         <article className="card">
-          <h3>Recent Update</h3>
+          <h3>Recent Updates</h3>
           <p>2 sessions were approved today.</p>
           <p>1 mentor profile is pending review.</p>
         </article>

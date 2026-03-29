@@ -1,7 +1,9 @@
+import { useNavigate } from "react-router-dom"
+
 function Footer() {
   return (
     <footer className="footer">
-      <p>MentorConnect 2026</p>
+      <p>© 2026 MentorConnect · Knowledge. Guidance. Growth.</p>
     </footer>
   )
 }

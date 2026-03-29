@@ -15,10 +15,10 @@ function Sidebar() {
           Dashboard
         </Link>
         <Link to="/browse" className={linkClass("/browse")}>
-          Mentors
+          Browse Mentors
         </Link>
         <Link to="/mentee/sessions" className={linkClass("/mentee/sessions")}>
-          Sessions
+          My Sessions
         </Link>
       </div>
       <button

@@ -9,40 +9,7 @@ import MenteeDashboard from "./pages/mentee/MenteeDashboard"
 import BrowseMentors from "./pages/mentee/BrowseMentors"
 import MySessions from "./pages/mentee/MySessions"
 import MentorSessions from "./pages/mentor/MentorSessions"
-
-function Home() {
-  const navigate = useNavigate()
-
-  return (
-    <section className="card hero-card">
-      <div className="hero-grid">
-        <div className="hero-copy">
-          <p className="hero-tag">MentorConnect Platform</p>
-          <h1>Online Mentoring & Training Platform</h1>
-          <p>
-            Learn with mentors, schedule focused sessions, and track study progress
-            with role-based dashboards for Admin, Mentor, and Mentee.
-          </p>
-          <div className="actions">
-            <button className="btn" onClick={() => navigate("/get-started")}>
-              Get Started
-            </button>
-          </div>
-        </div>
-
-        <div className="hero-visual" aria-hidden="true">
-          <div className="hero-screen">
-            <span>Mentoring</span>
-          </div>
-          <div className="hero-block hero-block-a" />
-          <div className="hero-block hero-block-b" />
-          <div className="hero-block hero-block-c" />
-          <div className="hero-ring" />
-        </div>
-      </div>
-    </section>
-  )
-}
+import Home from "./pages/Home"
 
 function GetStarted() {
   const navigate = useNavigate()
@@ -61,21 +28,16 @@ function GetStarted() {
         <div className="getstart-text getstart-center">
           <h1 className="getstart-title">MentorConnect</h1>
           <p className="getstart-subtitle">Online Mentoring & Training Platform</p>
-          <p className="text-base text-gray-700 leading-relaxed max-w-md mx-auto">
+          <p className="getstart-value">
             Connect with expert mentors. Book sessions. Grow faster.
           </p>
           <button className="btn" onClick={() => navigate("/login")}>
-            Find a Mentor
+            Continue to Login
           </button>
         </div>
       </div>
     </section>
   )
-}
-
-function HomeEntry() {
-  const role = localStorage.getItem("role")
-  return role ? <Home /> : <Navigate to="/get-started" replace />
 }
 
 function RequireAccess({ allowMentee, allowAdmin, allowMentor, children }) {
@@ -111,14 +73,17 @@ function RequireAccess({ allowMentee, allowAdmin, allowMentor, children }) {
 function App() {
   const location = useLocation()
   const isGetStarted = location.pathname === "/get-started"
+  const isLogin = location.pathname === "/login"
+  const hideNavbar = isGetStarted || isLogin
 
   return (
     <div className="app">
-      {!isGetStarted ? <Navbar /> : null}
-      <main className="container">
+      {!hideNavbar ? <Navbar /> : null}
+      <main className={isLogin ? "container-full" : "container"}>
         <Routes>
-          <Route path="/" element={<HomeEntry />} />
+          <Route path="/" element={<Navigate to="/get-started" replace />} />
           <Route path="/get-started" element={<GetStarted />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route
             path="/mentee/dashboard"
@@ -179,7 +144,7 @@ function App() {
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </main>
-      {!isGetStarted ? <Footer /> : null}
+      {!hideNavbar ? <Footer /> : null}
     </div>
   )
 }

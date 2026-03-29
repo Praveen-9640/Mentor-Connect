@@ -42,12 +42,31 @@ function ManageSessions() {
                   <td>{session.mentee}</td>
                   <td>{session.mentor}</td>
                   <td>{session.date}</td>
-                  <td>{session.status}</td>
                   <td>
-                    <button className="btn btn-small" onClick={() => updateStatus(session.id, "Scheduled")}>
-                      Approve
-                    </button>
-                    <button className="btn btn-light btn-small" onClick={() => updateStatus(session.id, "Cancelled")}>
+                    <span className={`status-badge ${session.status.toLowerCase()}`}>
+                      {session.status}
+                    </span>
+                  </td>
+                  <td style={{ display: "flex", gap: "6px" }}>
+                    {session.status === "Scheduled" ? (
+                      <button
+                        className="btn btn-light btn-small"
+                        onClick={() => updateStatus(session.id, "Pending")}
+                      >
+                        Unapprove
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-small"
+                        onClick={() => updateStatus(session.id, "Scheduled")}
+                      >
+                        Approve
+                      </button>
+                    )}
+                    <button
+                      className="btn btn-light btn-small"
+                      onClick={() => updateStatus(session.id, "Cancelled")}
+                    >
                       Cancel
                     </button>
                   </td>

@@ -18,6 +18,13 @@ function ManageUsers() {
     setMessage("User approved.")
   }
 
+  const unapproveUser = (id) => {
+    setUsers((prev) =>
+      prev.map((user) => (user.id === id ? { ...user, status: "Pending" } : user))
+    )
+    setMessage("User unapproved.")
+  }
+
   const deleteUser = (id) => {
     setUsers((prev) => prev.filter((user) => user.id !== id))
     setMessage("User removed.")
@@ -48,11 +55,21 @@ function ManageUsers() {
                 <tr key={user.id}>
                   <td>{user.name}</td>
                   <td>{user.role}</td>
-                  <td>{user.status}</td>
                   <td>
-                    <button className="btn btn-small" onClick={() => approveUser(user.id)}>
-                      Approve
-                    </button>
+                    <span className={`status-badge ${user.status.toLowerCase()}`}>
+                      {user.status}
+                    </span>
+                  </td>
+                  <td>
+                    {user.status === "Approved" ? (
+                      <button className="btn btn-small" onClick={() => unapproveUser(user.id)}>
+                        Unapprove
+                      </button>
+                    ) : (
+                      <button className="btn btn-small" onClick={() => approveUser(user.id)}>
+                        Approve
+                      </button>
+                    )}
                     <button className="btn btn-light btn-small" onClick={() => deleteUser(user.id)}>
                       Delete
                     </button>

@@ -6,11 +6,11 @@ function Navbar() {
 
   return (
     <nav className="nav">
-      <Link to="/" className="logo-link">
+      <Link to="/home" className="logo-link">
         <h1 className="logo">MentorConnect</h1>
       </Link>
       <div className="nav-links">
-        <Link to="/">Home</Link>
+        <Link to="/home">Home</Link>
         <Link to="/mentee/dashboard">Mentee</Link>
         <Link to="/mentor/sessions">Mentor</Link>
         <Link to="/admin/dashboard">Admin</Link>

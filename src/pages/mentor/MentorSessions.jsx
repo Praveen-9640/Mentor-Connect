@@ -125,7 +125,11 @@ function MentorSessions() {
                   <td>{request.mentee}</td>
                   <td>{request.date}</td>
                   <td>{request.time}</td>
-                  <td>{request.status}</td>
+                  <td>
+                    <span className={`status-badge ${request.status.toLowerCase()}`}>
+                      {request.status}
+                    </span>
+                  </td>
                   <td>
                     <button className="btn btn-small" onClick={() => updateStatus(request.id, "Accepted")}>
                       Accept
