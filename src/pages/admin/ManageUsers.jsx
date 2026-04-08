@@ -1,34 +1,37 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import AdminSidebar from "../../components/AdminSidebar"
+import api from "../../api"
 
-const initialUsers = [
-  { id: 1, name: "Nithya prasuna", role: "Mentor", status: "Approved" },
-  { id: 2, name: "Anita Verma", role: "Mentor", status: "Pending" },
-  { id: 3, name: "Karthik Reddy", role: "Mentee", status: "Active" },
-]
 
 function ManageUsers() {
-  const [users, setUsers] = useState(initialUsers)
+  const [users, setUsers] = useState([])
   const [message, setMessage] = useState("")
 
-  const approveUser = (id) => {
-    setUsers((prev) =>
-      prev.map((user) => (user.id === id ? { ...user, status: "Approved" } : user))
-    )
-    setMessage("User approved.")
+  useEffect(() => {
+    fetchUsers()
+  }, [])
+
+  const fetchUsers = async () => {
+    try {
+      const res = await api.get("/users")
+      setUsers(res.data)
+    } catch (err) {
+      console.error("Failed to fetch users", err)
+      setMessage("Failed to fetch users")
+    }
   }
 
-  const unapproveUser = (id) => {
-    setUsers((prev) =>
-      prev.map((user) => (user.id === id ? { ...user, status: "Pending" } : user))
-    )
-    setMessage("User unapproved.")
+  const deleteUser = async (id) => {
+    try {
+      await api.delete(`/users/${id}`)
+      setMessage("User removed.")
+      setUsers(users.filter(u => u.id !== id))
+    } catch (err) {
+      console.error(err)
+      setMessage("Failed to remove user.")
+    }
   }
 
-  const deleteUser = (id) => {
-    setUsers((prev) => prev.filter((user) => user.id !== id))
-    setMessage("User removed.")
-  }
 
   return (
     <div className="workspace">
@@ -37,45 +40,43 @@ function ManageUsers() {
       <section className="workspace-main">
         <header className="page-header">
           <h1>Manage Users</h1>
-          <p>Approve or remove users.</p>
+          <p>View registered users.</p>
         </header>
 
         <article className="card">
           <table className="table">
             <thead>
               <tr>
+                <th>ID</th>
                 <th>Name</th>
+                <th>Email</th>
                 <th>Role</th>
-                <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
               {users.map((user) => (
                 <tr key={user.id}>
+                  <td>{user.id}</td>
                   <td>{user.name}</td>
-                  <td>{user.role}</td>
+                  <td>{user.email}</td>
                   <td>
-                    <span className={`status-badge ${user.status.toLowerCase()}`}>
-                      {user.status}
+                    <span className={`status-badge active`}>
+                      {user.role}
                     </span>
                   </td>
                   <td>
-                    {user.status === "Approved" ? (
-                      <button className="btn btn-small" onClick={() => unapproveUser(user.id)}>
-                        Unapprove
-                      </button>
-                    ) : (
-                      <button className="btn btn-small" onClick={() => approveUser(user.id)}>
-                        Approve
-                      </button>
-                    )}
                     <button className="btn btn-light btn-small" onClick={() => deleteUser(user.id)}>
-                      Delete
+                      Remove
                     </button>
                   </td>
                 </tr>
               ))}
+              {users.length === 0 && (
+                <tr>
+                   <td colSpan="4" style={{textAlign: "center"}}>No users found.</td>
+                </tr>
+              )}
             </tbody>
           </table>
           {message ? <p className="hint">{message}</p> : null}

@@ -11,6 +11,9 @@ function MentorSidebar() {
     <aside className="side-panel">
       <h2>Mentor</h2>
       <div className="side-links">
+        <Link to="/mentor/dashboard" className={linkClass("/mentor/dashboard")}>
+          Dashboard
+        </Link>
         <Link to="/mentor/sessions" className={linkClass("/mentor/sessions")}>
           Sessions
         </Link>

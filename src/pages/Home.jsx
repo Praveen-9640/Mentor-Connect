@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import api from "../api"
 
 const features = [
   {
@@ -15,22 +17,51 @@ const features = [
   },
 ]
 
-const stats = [
-  { label: "Mentors", value: "14" },
-  { label: "Mentees", value: "42" },
-  { label: "Sessions Done", value: "120+" },
-  { label: "Topics Covered", value: "6" },
-]
-
 function Home() {
   const navigate = useNavigate()
   const role = localStorage.getItem("role")
+
+  const [stats, setStats] = useState([
+    { label: "Mentors", value: "0" },
+    { label: "Mentees", value: "0" },
+    { label: "Topics Covered", value: "0" },
+  ])
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await api.get("/users")
+        const users = res.data
+        
+        const mentors = users.filter(u => u.role.toUpperCase() === "MENTOR")
+        const mentees = users.filter(u => u.role.toUpperCase() === "MENTEE")
+        
+        // Count unique subjects among mentors
+        const subjects = new Set()
+        mentors.forEach(m => {
+          if (m.subject && m.subject.trim() !== "") {
+            subjects.add(m.subject.trim().toLowerCase())
+          }
+        })
+
+        setStats([
+          { label: "Mentors", value: mentors.length.toString() },
+          { label: "Mentees", value: mentees.length.toString() },
+          { label: "Topics Covered", value: subjects.size.toString() },
+        ])
+      } catch (err) {
+        console.error("Failed to fetch user stats", err)
+      }
+    }
+    
+    fetchStats()
+  }, [])
 
   const dashboardPath =
     role === "admin"
       ? "/admin/dashboard"
       : role === "mentor"
-        ? "/mentor/sessions"
+        ? "/mentor/dashboard"
         : "/mentee/dashboard"
 
   return (

@@ -1,76 +1,38 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import MentorSidebar from "../../components/MentorSidebar"
+import api from "../../api"
 
-const timeSlots = ["08:00-10:00", "12:00-15:00", "15:00-17:00"]
-const weekRows = [
-  { label: "Mon", day: 1 },
-  { label: "Tue", day: 2 },
-  { label: "Wed", day: 3 },
-  { label: "Thu", day: 4 },
-  { label: "Fri", day: 5 },
-  { label: "Sat", day: 6 },
-]
-
-const initialRequests = [
-  { id: 1, mentee: "Karthik Reddy", mentor: "Nithya prasuna", date: "2026-02-24", time: "08:00-10:00", status: "Pending" },
-  { id: 2, mentee: "Neha Jain", mentor: "Nithya prasuna", date: "2026-02-25", time: "12:00-15:00", status: "Pending" },
-  { id: 3, mentee: "Rohit Das", mentor: "Nithya prasuna", date: "2026-02-26", time: "15:00-17:00", status: "Pending" },
-]
-
-function getCurrentWeekRange() {
-  const today = new Date()
-  const day = today.getDay()
-  const diffToMonday = day === 0 ? -6 : 1 - day
-  const weekStart = new Date(today)
-  weekStart.setDate(today.getDate() + diffToMonday)
-  weekStart.setHours(0, 0, 0, 0)
-
-  const weekEnd = new Date(weekStart)
-  weekEnd.setDate(weekStart.getDate() + 6)
-  weekEnd.setHours(23, 59, 59, 999)
-
-  return { weekStart, weekEnd }
-}
-
-function getSlotMentee(sessions, weekday, slot, weekStart, weekEnd) {
-  const booked = sessions.find((session) => {
-    if (session.status !== "Accepted") {
-      return false
-    }
-    const sessionDate = new Date(session.date)
-    return sessionDate.getDay() === weekday &&
-      session.time === slot &&
-      sessionDate >= weekStart &&
-      sessionDate <= weekEnd
-  })
-
-  return booked ? booked.mentee : "--"
-}
 
 function MentorSessions() {
-  const [requests, setRequests] = useState(initialRequests)
+  const [requests, setRequests] = useState([])
   const [message, setMessage] = useState("")
-  const { weekStart, weekEnd } = getCurrentWeekRange()
+  
+  const userId = localStorage.getItem("userId")
 
-  const updateStatus = (id, nextStatus) => {
-    if (nextStatus === "Accepted") {
-      const target = requests.find((r) => r.id === id)
-      const isConflicting = requests.some(
-        (r) =>
-          r.id !== id &&
-          r.status === "Accepted" &&
-          r.date === target.date &&
-          r.time === target.time
-      )
+  useEffect(() => {
+    fetchSessions()
+  }, [])
 
-      if (isConflicting) {
-        setMessage("No mentor available at that time")
-        return
-      }
+  const fetchSessions = async () => {
+    try {
+      const res = await api.get("/sessions")
+      // Filter sessions that belong to this mentor
+      setRequests(res.data.filter(s => s.mentor?.id === Number(userId)))
+    } catch (err) {
+      console.error(err)
+      setMessage("Failed to fetch sessions.")
     }
+  }
 
-    setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status: nextStatus } : r)))
-    setMessage(`Session ${nextStatus.toLowerCase()}.`)
+  const updateStatus = async (id, nextStatus) => {
+    try {
+      await api.put(`/sessions/${id}/status`, { status: nextStatus })
+      setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status: nextStatus } : r)))
+      setMessage(`Session successfully marked as ${nextStatus.toLowerCase()}.`)
+    } catch (err) {
+      console.error(err)
+      setMessage("Failed to update session status.")
+    }
   }
 
   return (
@@ -80,32 +42,8 @@ function MentorSessions() {
       <section className="workspace-main">
         <header className="page-header">
           <h1>Mentor Sessions</h1>
-          <p>Accept or cancel requests. Accepted sessions appear in weekly schedule.</p>
+          <p>Accept or cancel requests.</p>
         </header>
-
-        <article className="card">
-          <h3>Weekly Prototype Schedule</h3>
-          <table className="table prototype-table">
-            <thead>
-              <tr>
-                <th>Day</th>
-                {timeSlots.map((slot) => (
-                  <th key={slot}>{slot}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {weekRows.map((row) => (
-                <tr key={row.label}>
-                  <td>{row.label}</td>
-                  {timeSlots.map((slot) => (
-                    <td key={slot}>{getSlotMentee(requests, row.day, slot, weekStart, weekEnd)}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </article>
 
         <article className="card">
           <h3>Session Requests</h3>
@@ -113,8 +51,7 @@ function MentorSessions() {
             <thead>
               <tr>
                 <th>Mentee</th>
-                <th>Date</th>
-                <th>Time</th>
+                <th>Time Range</th>
                 <th>Status</th>
                 <th>Action</th>
               </tr>
@@ -122,24 +59,37 @@ function MentorSessions() {
             <tbody>
               {requests.map((request) => (
                 <tr key={request.id}>
-                  <td>{request.mentee}</td>
-                  <td>{request.date}</td>
-                  <td>{request.time}</td>
+                  <td>{request.mentee?.name || "Unknown"}</td>
+                  <td>
+                    {new Date(request.startTime).toLocaleString()} - 
+                    {new Date(request.endTime).toLocaleTimeString()}
+                  </td>
                   <td>
                     <span className={`status-badge ${request.status.toLowerCase()}`}>
                       {request.status}
                     </span>
                   </td>
                   <td>
-                    <button className="btn btn-small" onClick={() => updateStatus(request.id, "Accepted")}>
-                      Accept
-                    </button>
-                    <button className="btn btn-light btn-small" onClick={() => updateStatus(request.id, "Cancelled")}>
-                      Cancel
-                    </button>
+                    {request.status === "Accepted" || request.status === "Cancelled" ? (
+                      <span className="hint">Done</span>
+                    ) : (
+                      <>
+                        <button className="btn btn-small" onClick={() => updateStatus(request.id, "Accepted")}>
+                          Accept
+                        </button>
+                        <button className="btn btn-light btn-small" onClick={() => updateStatus(request.id, "Cancelled")} style={{ marginLeft: "5px" }}>
+                          Cancel
+                        </button>
+                      </>
+                    )}
                   </td>
                 </tr>
               ))}
+              {requests.length === 0 && (
+                <tr>
+                   <td colSpan="4" style={{textAlign: "center"}}>No session requests found.</td>
+                </tr>
+              )}
             </tbody>
           </table>
           {message ? <p className="hint">{message}</p> : null}

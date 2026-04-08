@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import Sidebar from "../../components/Sidebar"
+import MentorSidebar from "../../components/MentorSidebar"
 import api from "../../api"
 
-function MenteeDashboard() {
+function MentorDashboard() {
   const navigate = useNavigate()
   const userName = localStorage.getItem("userName")
   const userId = localStorage.getItem("userId")
@@ -13,8 +13,9 @@ function MenteeDashboard() {
     const fetchSessions = async () => {
       try {
         const res = await api.get("/sessions")
-        const UserSessions = res.data.filter(s => s.mentee?.id === Number(userId))
-        setSessionCount(UserSessions.length)
+        // Filter sessions where this user is the mentor
+        const MySessions = res.data.filter(s => s.mentor?.id === Number(userId))
+        setSessionCount(MySessions.length)
       } catch (err) {
         console.error(err)
       }
@@ -24,12 +25,12 @@ function MenteeDashboard() {
 
   return (
     <div className="workspace">
-      <Sidebar />
+      <MentorSidebar />
 
       <section className="workspace-main">
         <header className="page-header">
-          <h1>Mentee Dashboard</h1>
-          <p>Welcome back. Continue your mentorship journey.</p>
+          <h1>Mentor Dashboard</h1>
+          <p>Welcome back! Manage your schedule and guide your mentees.</p>
         </header>
 
         <div className="stat-grid">
@@ -38,20 +39,19 @@ function MenteeDashboard() {
             <h3>{userName}</h3>
           </article>
           <article className="stat-card">
-            <p>Total Booked Sessions</p>
+            <p>Total Session Requests</p>
             <h3>{sessionCount}</h3>
           </article>
           <article className="stat-card">
-            <p>Progress</p>
-            <h3>60%</h3>
+            <p>Profile Status</p>
+            <h3>Active</h3>
           </article>
         </div>
 
         <article className="card">
           <h3>Quick Actions</h3>
           <div className="actions">
-            <button className="btn" onClick={() => navigate("/browse")}>Browse Mentors</button>
-            <button className="btn btn-light" onClick={() => navigate("/mentee/sessions")}>My Sessions</button>
+            <button className="btn" onClick={() => navigate("/mentor/sessions")}>View Session Requests</button>
           </div>
         </article>
       </section>
@@ -59,4 +59,4 @@ function MenteeDashboard() {
   )
 }
 
-export default MenteeDashboard
+export default MentorDashboard

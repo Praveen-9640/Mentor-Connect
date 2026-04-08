@@ -1,14 +1,33 @@
+import { useEffect, useState } from "react"
 import AdminSidebar from "../../components/AdminSidebar"
 import { useNavigate } from "react-router-dom"
+import api from "../../api"
 
-const stats = [
-  { label: "Mentors", value: "14" },
-  { label: "Mentees", value: "42" },
-  { label: "Sessions", value: "12" },
-]
 
 function AdminDashboard() {
   const navigate = useNavigate()
+  const [stats, setStats] = useState([
+    { label: "Mentors", value: "0" },
+    { label: "Mentees", value: "0" },
+  ])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userRes = await api.get("/users")
+        const mentorsCount = userRes.data.filter(u => u.role.toUpperCase() === "MENTOR").length
+        const menteesCount = userRes.data.filter(u => u.role.toUpperCase() === "MENTEE").length
+
+        setStats([
+          { label: "Mentors", value: mentorsCount },
+          { label: "Mentees", value: menteesCount },
+        ])
+      } catch (err) {
+        console.error("Failed to load dashboard stats", err)
+      }
+    }
+    fetchData()
+  }, [])
 
   return (
     <div className="workspace">

@@ -8,6 +8,7 @@ import ManageSessions from "./pages/admin/ManageSessions"
 import MenteeDashboard from "./pages/mentee/MenteeDashboard"
 import BrowseMentors from "./pages/mentee/BrowseMentors"
 import MySessions from "./pages/mentee/MySessions"
+import MentorDashboard from "./pages/mentor/MentorDashboard"
 import MentorSessions from "./pages/mentor/MentorSessions"
 import Home from "./pages/Home"
 
@@ -64,7 +65,7 @@ function RequireAccess({ allowMentee, allowAdmin, allowMentor, children }) {
   }
 
   if (role === "mentor") {
-    return <Navigate to="/mentor/sessions" replace />
+    return <Navigate to="/mentor/dashboard" replace />
   }
 
   return <Navigate to="/mentee/dashboard" replace />
@@ -106,6 +107,14 @@ function App() {
             element={
               <RequireAccess allowMentee allowAdmin>
                 <MySessions />
+              </RequireAccess>
+            }
+          />
+          <Route
+            path="/mentor/dashboard"
+            element={
+              <RequireAccess allowMentor allowAdmin>
+                <MentorDashboard />
               </RequireAccess>
             }
           />

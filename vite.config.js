@@ -7,4 +7,14 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  server: {
+  host: '0.0.0.0',
+  allowedHosts: ['.ngrok-free.dev'],
+  proxy: {
+    '/api': {
+      target: 'http://localhost:8080',
+      changeOrigin: true
+    }
+  }
+}
 })
