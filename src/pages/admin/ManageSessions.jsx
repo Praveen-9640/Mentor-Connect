@@ -13,7 +13,7 @@ function ManageSessions() {
 
   const fetchSessions = async () => {
     try {
-      const res = await api.get("/sessions")
+      const res = await api.get("/api/sessions")
       setSessions(res.data)
     } catch (err) {
       console.error(err)

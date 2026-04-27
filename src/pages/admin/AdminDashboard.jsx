@@ -14,7 +14,7 @@ function AdminDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userRes = await api.get("/users")
+        const userRes = await api.get("/api/users")
         const mentorsCount = userRes.data.filter(u => u.role.toUpperCase() === "MENTOR").length
         const menteesCount = userRes.data.filter(u => u.role.toUpperCase() === "MENTEE").length
 

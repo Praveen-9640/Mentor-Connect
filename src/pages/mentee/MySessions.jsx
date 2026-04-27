@@ -21,7 +21,7 @@ function MySessions() {
 
   const fetchMentors = async () => {
     try {
-      const res = await api.get("/users")
+      const res = await api.get("/api/users")
       const mentorUsers = res.data.filter(u => u.role.toUpperCase() === "MENTOR")
       setMentors(mentorUsers)
       if (mentorUsers.length > 0) {
@@ -34,7 +34,7 @@ function MySessions() {
 
   const fetchSessions = async () => {
     try {
-      const res = await api.get("/sessions")
+      const res = await api.get("/api/sessions")
 
       setSessions(res.data.filter(s => s.mentee?.id === Number(userId)))
     } catch (err) {

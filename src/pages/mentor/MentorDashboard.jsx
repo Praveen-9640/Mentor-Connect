@@ -12,7 +12,7 @@ function MentorDashboard() {
   useEffect(() => {
     const fetchSessions = async () => {
       try {
-        const res = await api.get("/sessions")
+        const res = await api.get("/api/sessions")
 
         const MySessions = res.data.filter(s => s.mentor?.id === Number(userId))
         setSessionCount(MySessions.length)

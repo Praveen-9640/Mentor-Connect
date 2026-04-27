@@ -15,7 +15,7 @@ function MentorSessions() {
 
   const fetchSessions = async () => {
     try {
-      const res = await api.get("/sessions")
+      const res = await api.get("/api/sessions")
 
       setRequests(res.data.filter(s => s.mentor?.id === Number(userId)))
     } catch (err) {

@@ -13,7 +13,7 @@ function ManageUsers() {
 
   const fetchUsers = async () => {
     try {
-      const res = await api.get("/users")
+      const res = await api.get("/api/users")
       setUsers(res.data)
     } catch (err) {
       console.error("Failed to fetch users", err)

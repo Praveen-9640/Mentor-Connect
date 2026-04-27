@@ -30,7 +30,7 @@ function Home() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await api.get("/users")
+        const res = await api.get("/api/users")
         const users = res.data
         
         const mentors = users.filter(u => u.role.toUpperCase() === "MENTOR")

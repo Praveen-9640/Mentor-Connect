@@ -12,7 +12,7 @@ function MenteeDashboard() {
   useEffect(() => {
     const fetchSessions = async () => {
       try {
-        const res = await api.get("/sessions")
+        const res = await api.get("/api/sessions")
         const UserSessions = res.data.filter(s => s.mentee?.id === Number(userId))
         setSessionCount(UserSessions.length)
       } catch (err) {
