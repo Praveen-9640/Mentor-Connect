@@ -59,7 +59,7 @@ function MySessions() {
         mentor: { id: Number(selectedMentor) }
       }
 
-      await api.post("/sessions/book", body)
+      await api.post("/api/sessions/book", body)
       setMessage("Session booked successfully!")
       fetchSessions()
     } catch (err) {
