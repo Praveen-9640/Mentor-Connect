@@ -40,7 +40,7 @@ function Login() {
     }
 
     if (isSignup) {
-      // --- SIGNUP LOGIC ---
+
       if (!name || !email || !password) {
         setError("Please fill in all fields.")
         return
@@ -68,11 +68,11 @@ function Login() {
           name,
           email,
           password,
-          role: selectedRole.toUpperCase(), // e.g. MENTEE, MENTOR, ADMIN
+          role: selectedRole.toUpperCase(),
           subject: selectedRole === "mentor" ? subject : null,
           studyYear: selectedRole === "mentee" ? studyYear : null,
         }
-        await api.post("/auth/register", payload)
+        await api.post("/api/auth/register", payload)
         
         alert(`Account created for ${name} (${email}) as ${selectedRole}!`);
         setIsSignup(false); 
@@ -83,7 +83,7 @@ function Login() {
         refreshCaptcha()
       }
     } else {
-      // --- LOGIN LOGIC ---
+
       if (!email || !password) {
         setError("Please enter email and password.")
         return
@@ -91,12 +91,11 @@ function Login() {
 
       try {
         const payload = { email, password }
-        const res = await api.post("/auth/login", payload)
+        const res = await api.post("/api/auth/login", payload)
         
-        const user = res.data; // { id, name, email, role }
+        const user = res.data;
         
-        // Match the role that is selected to the user's role
-        // user.role from backend is enum string like MENTEE, MENTOR, ADMIN
+
         const userRoleLower = user.role.toLowerCase()
         if (userRoleLower !== selectedRole.toLowerCase()) {
            setError(`You are not registered as a ${selectedRole}.`)
@@ -104,7 +103,7 @@ function Login() {
            return;
         }
 
-        // Store user detials
+
         localStorage.setItem("role", userRoleLower)
         localStorage.setItem("userId", user.id)
         localStorage.setItem("userName", user.name)

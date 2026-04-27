@@ -8,13 +8,13 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
-  host: '0.0.0.0',
-  allowedHosts: ['.ngrok-free.dev'],
-  proxy: {
-    '/api': {
-      target: 'http://localhost:8080',
-      changeOrigin: true
+    host: '0.0.0.0',
+    allowedHosts: ['.ngrok-free.dev'],
+    proxy: {
+      '/api': {
+        target: 'https://mentor-connect-backend-qmg6.onrender.com',
+        changeOrigin: true
+      }
     }
   }
-}
 })

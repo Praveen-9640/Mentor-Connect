@@ -36,7 +36,7 @@ function Home() {
         const mentors = users.filter(u => u.role.toUpperCase() === "MENTOR")
         const mentees = users.filter(u => u.role.toUpperCase() === "MENTEE")
         
-        // Count unique subjects among mentors
+
         const subjects = new Set()
         mentors.forEach(m => {
           if (m.subject && m.subject.trim() !== "") {

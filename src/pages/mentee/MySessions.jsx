@@ -10,8 +10,7 @@ function MySessions() {
 
   const [selectedMentor, setSelectedMentor] = useState("")
   const [selectedDate, setSelectedDate] = useState("")
-  const [selectedTimeStart, setSelectedTimeStart] = useState("08:00") // simple start time
-  const [selectedTimeEnd, setSelectedTimeEnd] = useState("10:00")   // simple end time
+  const [selectedPeriod, setSelectedPeriod] = useState("08:00-10:00")
 
   const userId = localStorage.getItem("userId")
 
@@ -36,7 +35,7 @@ function MySessions() {
   const fetchSessions = async () => {
     try {
       const res = await api.get("/sessions")
-      // Filter sessions for current mentee
+
       setSessions(res.data.filter(s => s.mentee?.id === Number(userId)))
     } catch (err) {
       console.error(err)
@@ -44,26 +43,28 @@ function MySessions() {
   }
 
   const addSession = async () => {
-    if (!selectedDate || !selectedTimeStart || !selectedTimeEnd) {
+    if (!selectedDate || !selectedPeriod) {
       setMessage("Please fill all booking fields.")
       return
     }
 
+    const [startSpan, endSpan] = selectedPeriod.split("-")
+
     try {
       const body = {
-        startTime: `${selectedDate}T${selectedTimeStart}:00`,
-        endTime: `${selectedDate}T${selectedTimeEnd}:00`,
-        status: "Pending", // initial status
+        startTime: `${selectedDate}T${startSpan}:00`,
+        endTime: `${selectedDate}T${endSpan}:00`,
+        status: "Pending",
         mentee: { id: Number(userId) },
         mentor: { id: Number(selectedMentor) }
       }
 
       await api.post("/sessions/book", body)
       setMessage("Session booked successfully!")
-      fetchSessions() // Refresh table
+      fetchSessions()
     } catch (err) {
        console.error(err)
-       setMessage("Failed to book session")
+       setMessage(err.response?.data?.error || "Failed to book session")
     }
   }
 
@@ -73,10 +74,10 @@ function MySessions() {
       return;
     }
 
-    // Prepare CSV header
+
     const headers = ["Mentor Name", "Start Time", "End Time", "Status"];
     
-    // Prepare rows
+
     const rows = sessions.map(session => [
       session.mentor?.name || "Unknown",
       new Date(session.startTime).toLocaleString(),
@@ -84,13 +85,13 @@ function MySessions() {
       session.status
     ]);
 
-    // Combine
+
     const csvContent = [
       headers.join(","),
       ...rows.map(r => r.map(cell => `"${cell}"`).join(","))
     ].join("\n");
 
-    // Create a Blob and trigger auto-download
+
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -132,12 +133,12 @@ function MySessions() {
               />
             </label>
             <label>
-              Start Time
-              <input type="time" value={selectedTimeStart} onChange={e => setSelectedTimeStart(e.target.value)} />
-            </label>
-            <label>
-              End Time
-              <input type="time" value={selectedTimeEnd} onChange={e => setSelectedTimeEnd(e.target.value)} />
+              Time Period
+              <select value={selectedPeriod} onChange={e => setSelectedPeriod(e.target.value)}>
+                <option value="08:00-10:00">08:00 AM - 10:00 AM</option>
+                <option value="13:00-15:00">01:00 PM - 03:00 PM</option>
+                <option value="17:00-19:00">05:00 PM - 07:00 PM</option>
+              </select>
             </label>
           </div>
           <div className="actions">

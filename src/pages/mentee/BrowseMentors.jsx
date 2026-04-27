@@ -14,7 +14,7 @@ function BrowseMentors() {
   const fetchMentors = async () => {
     try {
       const res = await api.get("/users")
-      // Filter only users with role MENTOR
+
       const mentorUsers = res.data.filter(u => u.role.toUpperCase() === "MENTOR")
       setMentors(mentorUsers)
     } catch (err) {

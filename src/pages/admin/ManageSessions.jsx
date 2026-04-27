@@ -21,8 +21,7 @@ function ManageSessions() {
     }
   }
 
-  // Without a status update API right now, we just list them.
-  // The system would originally have updateStatus, but the backend doesn't have a PUT endpoint yet.
+
   
   return (
     <div className="workspace">

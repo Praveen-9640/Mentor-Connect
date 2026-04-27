@@ -13,7 +13,7 @@ function MentorDashboard() {
     const fetchSessions = async () => {
       try {
         const res = await api.get("/sessions")
-        // Filter sessions where this user is the mentor
+
         const MySessions = res.data.filter(s => s.mentor?.id === Number(userId))
         setSessionCount(MySessions.length)
       } catch (err) {

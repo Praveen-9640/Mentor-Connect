@@ -16,7 +16,7 @@ function MentorSessions() {
   const fetchSessions = async () => {
     try {
       const res = await api.get("/sessions")
-      // Filter sessions that belong to this mentor
+
       setRequests(res.data.filter(s => s.mentor?.id === Number(userId)))
     } catch (err) {
       console.error(err)
@@ -59,10 +59,21 @@ function MentorSessions() {
             <tbody>
               {requests.map((request) => (
                 <tr key={request.id}>
-                  <td>{request.mentee?.name || "Unknown"}</td>
                   <td>
-                    {new Date(request.startTime).toLocaleString()} - 
-                    {new Date(request.endTime).toLocaleTimeString()}
+                    <strong>{request.mentee?.name || "Unknown"}</strong>
+                    {request.status === "Accepted" && request.mentee && (
+                      <div style={{ fontSize: "0.85em", marginTop: "4px", color: "gray" }}>
+                        <div style={{ margin: "2px 0" }}>📧 {request.mentee.email}</div>
+                        <div style={{ margin: "2px 0" }}>🎓 Year: {request.mentee.studyYear || "N/A"}</div>
+                      </div>
+                    )}
+                  </td>
+                  <td style={{ whiteSpace: "nowrap" }}>
+                    {new Date(request.startTime).toLocaleDateString()} <br/>
+                    <span style={{ fontSize: "0.9em", color: "gray" }}>
+                      {new Date(request.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - 
+                      {new Date(request.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
                   </td>
                   <td>
                     <span className={`status-badge ${request.status.toLowerCase()}`}>
@@ -73,14 +84,14 @@ function MentorSessions() {
                     {request.status === "Accepted" || request.status === "Cancelled" ? (
                       <span className="hint">Done</span>
                     ) : (
-                      <>
+                      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                         <button className="btn btn-small" onClick={() => updateStatus(request.id, "Accepted")}>
                           Accept
                         </button>
-                        <button className="btn btn-light btn-small" onClick={() => updateStatus(request.id, "Cancelled")} style={{ marginLeft: "5px" }}>
+                        <button className="btn btn-light btn-small" onClick={() => updateStatus(request.id, "Cancelled")}>
                           Cancel
                         </button>
-                      </>
+                      </div>
                     )}
                   </td>
                 </tr>
