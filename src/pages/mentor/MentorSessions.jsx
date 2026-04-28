@@ -61,7 +61,7 @@ function MentorSessions() {
                 <tr key={request.id}>
                   <td>
                     <strong>{request.mentee?.name || "Unknown"}</strong>
-                    {request.status === "Accepted" && request.mentee && (
+                    {request.status === "ACCEPTED" && request.mentee && (
                       <div style={{ fontSize: "0.85em", marginTop: "4px", color: "gray" }}>
                         <div style={{ margin: "2px 0" }}>📧 {request.mentee.email}</div>
                         <div style={{ margin: "2px 0" }}>🎓 Year: {request.mentee.studyYear || "N/A"}</div>
@@ -81,14 +81,14 @@ function MentorSessions() {
                     </span>
                   </td>
                   <td>
-                    {request.status === "Accepted" || request.status === "Cancelled" ? (
+                    {request.status === "ACCEPTED" || request.status === "CANCELLED" ? (
                       <span className="hint">Done</span>
                     ) : (
                       <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                        <button className="btn btn-small" onClick={() => updateStatus(request.id, "Accepted")}>
+                        <button className="btn btn-small" onClick={() => updateStatus(request.id, "ACCEPTED")}>
                           Accept
                         </button>
-                        <button className="btn btn-light btn-small" onClick={() => updateStatus(request.id, "Cancelled")}>
+                        <button className="btn btn-light btn-small" onClick={() => updateStatus(request.id, "CANCELLED")}>
                           Cancel
                         </button>
                       </div>
