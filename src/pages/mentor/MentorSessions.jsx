@@ -10,23 +10,21 @@ function MentorSessions() {
   const userId = localStorage.getItem("userId")
 
   useEffect(() => {
-    fetchSessions()
-  }, [])
-
-  const fetchSessions = async () => {
-    try {
-      const res = await api.get("/api/sessions")
-
-      setRequests(res.data.filter(s => s.mentor?.id === Number(userId)))
-    } catch (err) {
-      console.error(err)
-      setMessage("Failed to fetch sessions.")
+    const fetchSessions = async () => {
+      try {
+        const res = await api.get("/api/sessions")
+        setRequests(res.data.filter(s => s.mentor?.id === Number(userId)))
+      } catch (err) {
+        console.error(err)
+        setMessage("Failed to fetch sessions.")
+      }
     }
-  }
+    fetchSessions()
+  }, [userId])
 
   const updateStatus = async (id, nextStatus) => {
     try {
-      await api.put(`/sessions/${id}/status`, { status: nextStatus })
+      await api.put(`/api/sessions/${id}/status`, { status: nextStatus })
       setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status: nextStatus } : r)))
       setMessage(`Session successfully marked as ${nextStatus.toLowerCase()}.`)
     } catch (err) {
